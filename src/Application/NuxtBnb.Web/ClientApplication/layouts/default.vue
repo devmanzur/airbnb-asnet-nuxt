@@ -14,20 +14,32 @@
         <input type="text" placeholder="Check in" class="datepicker" />
         <input type="text" placeholder="Check out" class="datepicker" />
         <button>
-          <img src="/images/icons/search.svg"/>
+          <img src="/images/icons/search.svg" />
         </button>
       </div>
+      <div class="app-user-menu">
+        <template v-if="isLoggedIn">
+          <img :src="user.imageUrl" class="avatar" />
+        </template>
+        <div v-show="!isLoggedIn" id="googleButton" class="ml-8"></div>
+      </div>
     </header>
-    <header style="background-color: #eeeeee"></header>
-    <nuxt-link to="/">Home</nuxt-link>
-
-    <nuxt></nuxt>
+    <nuxt />
   </div>
 </template>
 <script>
 export default {
+  name: "defaultLayout",
   mounted() {
     this.initAutoComplete();
+  },
+  computed: {
+    user() {
+      return this.$store.state.auth.user;
+    },
+    isLoggedIn() {
+      return this.$store.state.auth.isLoggedIn;
+    },
   },
   methods: {
     initAutoComplete() {
@@ -39,7 +51,7 @@ export default {
         return;
       }
       this.$router.push({
-        name: 'search',
+        name: "search",
         query: {
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng(),

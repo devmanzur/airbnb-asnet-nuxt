@@ -2,25 +2,25 @@ export default function (context, inject) {
   let isLoaded = false;
   let waiting = [];
 
+  window.initGoogleMaps = init;
   addScript();
-  inject('maps', {
+  inject("maps", {
     showMap,
     makeAutoComplete,
   });
 
   function addScript() {
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.src =
-      'https://maps.googleapis.com/maps/api/js?key=AIzaSyDkDD_tREr9fuTi7dGQharS79THbjMBDiU&libraries=places&callback=initGoogleMaps';
+      "https://maps.googleapis.com/maps/api/js?key=AIzaSyDkDD_tREr9fuTi7dGQharS79THbjMBDiU&libraries=places&callback=initGoogleMaps";
     script.async = true;
-    window.initGoogleMaps = initGoogleMaps;
     document.head.appendChild(script);
   }
 
-  function initGoogleMaps() {
+  function init() {
     isLoaded = true;
     waiting.forEach((item) => {
-      if (typeof item.fn === 'function') {
+      if (typeof item.fn === "function") {
         item.fn(...item.arguments);
       }
     });
@@ -37,12 +37,12 @@ export default function (context, inject) {
     }
 
     const autoComplete = new window.google.maps.places.Autocomplete(input, {
-      types: ['(cities)'],
+      types: ["(cities)"],
     });
 
-    autoComplete.addListener('place_changed', () => {
+    autoComplete.addListener("place_changed", () => {
       const place = autoComplete.getPlace();
-      input.dispatchEvent(new CustomEvent('placeChanged', { detail: place }));
+      input.dispatchEvent(new CustomEvent("placeChanged", { detail: place }));
     });
   }
 
@@ -61,9 +61,9 @@ export default function (context, inject) {
       zoomControl: true,
       styles: [
         {
-          featureType: 'poi.business',
-          elementType: 'label.icon',
-          stylers: [{ visibility: 'off' }],
+          featureType: "poi.business",
+          elementType: "label.icon",
+          stylers: [{ visibility: "off" }],
         },
       ],
     };
@@ -87,7 +87,7 @@ export default function (context, inject) {
           text: `$${point.label}`,
           className: `marker home-${point.id}`,
         },
-        icon: 'https://maps.gstatic.com/mapfiles/transparent.png',
+        icon: "https://maps.gstatic.com/mapfiles/transparent.png",
         clickable: false,
       });
       marker.setMap(map);
