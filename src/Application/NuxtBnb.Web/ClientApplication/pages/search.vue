@@ -1,27 +1,29 @@
 <template>
-  <div>
-    <div>Results for: {{ label }}</div>
-    <div ref="map" style="height: 100vh; width: 60vw; float: right"></div>
-    <div v-if="homes.length > 0">
-      <nuxt-link
-        v-for="home in homes"
-        :key="home.objectID"
-        :to="`/home/${home.objectID}`"
-      >
-        <home-row
-          :home="home"
-          @mouseover.native="highlightMarker(home.objectID, true)"
-          @mouseout.native="highlightMarker(home.objectID, false)"
-        />
-      </nuxt-link>
-    </div>
-    <div v-else>
-      <h1>No results found!</h1>
+  <div class="app-search-results-page">
+    <div class="app-search-results">
+      <div class="app-search-results-listing">
+        <h2 class="app-title">Stays in {{ label }}</h2>
+        <nuxt-link
+          v-for="home in homes"
+          :key="home.objectID"
+          :to="`/home/${home.objectID}`"
+        >
+          <home-row
+            class="app-house"
+            :home="home"
+            @mouseover.native="highlightMarker(home.objectID, true)"
+            @mouseout.native="highlightMarker(home.objectID, false)"
+          />
+        </nuxt-link>
+      </div>
+      <div class="app-search-results-map">
+        <div class="app-map" ref="map"></div>
+      </div>
     </div>
   </div>
 </template>
 <script>
-import HomeRow from '../components/HomeRow.vue';
+import HomeRow from "../components/HomeRow.vue";
 export default {
   components: { HomeRow },
   async asyncData({ query, $dataApi }) {
@@ -43,7 +45,7 @@ export default {
       this.showMap();
     },
   },
-  watchQuery: ['lat'],
+  watchQuery: ["lat"],
   mounted() {
     this.showMap();
   },
@@ -51,7 +53,7 @@ export default {
     highlightMarker(homeId, isHighlighted) {
       document
         .getElementsByClassName(`home-${homeId}`)[0]
-        ?.classList?.toggle('marker-highlight', isHighlighted);
+        ?.classList?.toggle("marker-highlight", isHighlighted);
     },
     showMap() {
       this.$maps.showMap(
@@ -62,6 +64,9 @@ export default {
       );
     },
     getHomeMarkers() {
+      if (this.homes.length == 0) {
+        return null;
+      }
       return this.homes.map((home) => {
         return {
           ...home._geoloc,
